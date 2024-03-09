@@ -24,7 +24,7 @@ $(function () {
     var todayDate = dayjs().format(`dddd, MMMM D[${suffix}] h:mmA`);
     currentDay.text(todayDate);
   }
-
+  
   // change currentDay element by calling getDate function. updates the time displayed every second.
   getDate();
   setInterval(getDate, 1000);

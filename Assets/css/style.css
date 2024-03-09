@@ -12,6 +12,12 @@ textarea {
   padding: 10px;
 }
 
+/* custom border thickness */
+.custom-border {
+  border-bottom: solid black;
+  border-width: 8px; 
+}
+
 .description {
   white-space: pre-wrap;
 }
