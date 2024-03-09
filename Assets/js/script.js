@@ -4,8 +4,9 @@
 $(function () {
   var currentDay = $("#currentDay");
   var today = dayjs();
-  console.log(today.format('H'))
+  var savedData = []
 
+  // TODO: Add code to display the current date in the header of the page.
   function getDate() {
     var todayDay = today.format("DD");
     var todayLastDigit = todayDay.split("")[1];
@@ -29,8 +30,8 @@ $(function () {
 
   function createHourBlocks() {
     // loops for the set amount of hours in workday and creates a time block. Default sets block to future time
-    
-    for (let i = 0; i < 9; i++) {
+
+    for (let i = 0; i < 10; i++) {
       var hour = i + 9;
       var blockColor = checkHour(hour);
       var hourBlock = $("<div>", {
@@ -48,9 +49,24 @@ $(function () {
         class: "btn saveBtn col-2 col-md-1",
         "aria-label": "save",
       });
-      // saveButton.click(function() {
-      //   console.log(this)
-      // });
+
+      // saving text input to local storage on click
+      saveButton.click(function () {
+        var hourBlockID = $(this).parent().attr("id");
+        var textAreaEl = $(`#${hourBlockID}`).children()[1];
+        var userText = $(textAreaEl).val();
+        if (userText !== '') {
+          savedData.push(
+            {
+              hourBlockID: hourBlockID,
+              userText: userText,
+            });
+          localStorage.setItem('scheduleData', JSON.stringify(savedData));
+          console.log(savedData)
+          
+        }
+
+      });
       var saveIcon = $("<i>", { class: "fas fa-save", "aria-hidden": "true" });
 
       // Time display. Converts the 24-hour clock to 12-hour and determines if AM or PM
@@ -75,7 +91,7 @@ $(function () {
   /* TODO: Add a listener for click events on the save button. This code should use the id in the containing time-block as a key to save the user input in local storage. HINT: What does `this` reference in the click listener function? How can DOM traversal be used to get the "hour-x" id of the time-block containing the button that was clicked? How might the id be useful when saving the description in local storage?
    */
 
-  // function saveText() {}
+ 
 
   // TODO: Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
@@ -83,21 +99,22 @@ $(function () {
   // past, present, and future classes? How can Day.js be used to get the
   // current hour in 24-hour time?
   function checkHour(hourArg) {
-    var currentHour = Number(today.format('H'));
+    var currentHour = Number(today.format("H"));
     // var currentHour = Number("");
     if (hourArg < currentHour) {
-      return "row time-block past"
-    } else if (hourArg === currentHour){
+      return "row time-block past";
+    } else if (hourArg === currentHour) {
       return "row time-block present";
     } else {
       return "row time-block future";
     }
-  };
-
+  }
 
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
   //
-  // TODO: Add code to display the current date in the header of the page.
+  // function pullData() {
+  //   var data = localStorage.getItem("scheduleData")
+  // }
 });
