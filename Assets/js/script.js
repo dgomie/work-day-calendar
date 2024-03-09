@@ -6,12 +6,12 @@ $(function () {
   var today = dayjs();
   var savedData = JSON.parse(localStorage.getItem("scheduleData"));
 
-  // TODO: Add code to display the current date in the header of the page.
+  // displays the current date in the header of the page.
   function getDate() {
     var todayDay = today.format("DD");
     var todayLastDigit = todayDay.split("")[1];
     var suffix = "";
-    // Determines the suffix needed based on
+    // Determines the ordinal suffix needed for display
     if (todayLastDigit === "1") {
       suffix = "st";
     } else if (todayLastDigit === "2") {
@@ -25,13 +25,13 @@ $(function () {
     currentDay.text(todayDate);
   }
 
-  // change currentDay element by calling getDate function.
+  // change currentDay element by calling getDate function. updates the time displayed every second.
   getDate();
   setInterval(getDate, 1000);
 
   function createHourBlocks() {
-    // loops for the set amount of hours in workday and creates a time block. Default sets block to future time
-    for (let i = 0; i < 10; i++) {
+    // loops for the set amount of hours in workday and creates a time block. i < 9 determines how many time blocks created.
+    for (let i = 0; i < 9; i++) {
       var hour = i + 9;
       var blockColor = checkHour(hour);
       var hourBlock = $("<div>", {
@@ -52,36 +52,6 @@ $(function () {
 
       // saving text input to local storage on click
       saveButton.click(saveData);
-      // saveButton.click(function () {
-      //   var hourBlockID = "#" + $(this).parent().attr("id");
-      //   var textAreaEl = $(hourBlockID).children()[1];
-      //   var userText = $(textAreaEl).val();
-      //   var eventObj = {};
-      //   eventObj[hourBlockID] = userText;
-
-      //   if (savedData !== null) {
-      //     for (let i = 0; i < savedData.length; i++) {
-      //       if (Object.keys(savedData[i]).toString() === hourBlockID) {
-      //         console.log(savedData[i][`${hourBlockID}`]);
-      //         // console.log(typeof Object.keys(savedData[0]).toString());
-      //         // console.log(hourBlockID === Object.keys(savedData[i]).toString())
-      //         savedData[i][`${hourBlockID}`] = userText;
-
-      //         console.log("Object edited");
-      //       } else {
-      //         savedData.push(eventObj);
-      //         console.log("New object pushed");
-      //       }
-      //     }
-      //   } else {
-      //     savedData = [];
-      //     savedData.push(eventObj);
-      //     console.log("New Array created");
-      //   }
-      //   localStorage.setItem("scheduleData", JSON.stringify(savedData));
-      //   console.log(savedData);
-
-      // });
 
       var saveIcon = $("<i>", { class: "fas fa-save", "aria-hidden": "true" });
 
@@ -104,14 +74,7 @@ $(function () {
 
   createHourBlocks();
 
-  /* TODO: Add a listener for click events on the save button. This code should use the id in the containing time-block as a key to save the user input in local storage. HINT: What does `this` reference in the click listener function? How can DOM traversal be used to get the "hour-x" id of the time-block containing the button that was clicked? How might the id be useful when saving the description in local storage?
-   */
-
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
+  //  takes the  the current time and returns the appropriate class to
   function checkHour(hourArg) {
     var currentHour = Number(today.format("H"));
     // var currentHour = Number("12");
@@ -124,11 +87,7 @@ $(function () {
     }
   }
 
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-
+  // Function saves the text area data into local storage
   function saveData() {
     var hourBlockID = "#" + $(this).parent().attr("id");
     var textAreaEl = $(hourBlockID).children()[1];
@@ -139,28 +98,36 @@ $(function () {
     var editMade = false;
 
     if (savedData !== null) {
+      // checks if savedData exists
+      // for loop checks savedData for previously save hourBlocks
       for (let i = 0; i < savedData.length; i++) {
+        // if hourBlock already exists, replace the text with new input
         if (Object.keys(savedData[i]).toString() === hourBlockID) {
           savedData[i][`${hourBlockID}`] = userText;
           localStorage.setItem("scheduleData", JSON.stringify(savedData));
           console.log("Object edited");
           editMade = true;
-          break; // Exit the loop since we found and edited the object
+          break;
         }
-      };
+      }
 
       if (!editMade) {
+        //if the hourBlock doesn't exists in local storage, push new object to storage.
         savedData.push(eventObj);
         localStorage.setItem("scheduleData", JSON.stringify(savedData));
         console.log("New object pushed");
-      };
+      }
     } else {
+      //if no saveData exists, create a new savedData array and push created eventObject
       savedData = [];
       savedData.push(eventObj);
       console.log("New Array created");
-    };
-  };
-  //
+    }
+    //function creates prompt notifying user that their text was saved
+    eventSavedPrompt();
+  }
+
+  // Grabs data from localStorage and renders the text into the corresponding textareas
   function pullStoredData() {
     var data = JSON.parse(localStorage.getItem("scheduleData"));
 
@@ -174,8 +141,21 @@ $(function () {
   }
 
   pullStoredData();
-});
 
-function eventSavedPrompt() {
-  
-}
+  // renders prompt notifying user that data was saved
+  function eventSavedPrompt() {
+    var containerEl = $("#container");
+
+    var confirmPrompt = $("<div>", {
+      id: `confirm-prompt`,
+      class: "text-center p-1",
+    });
+    confirmPrompt.html("<strong>Appointment Saved 💾</strong>");
+
+    containerEl.prepend(confirmPrompt);
+
+    setTimeout(function () {
+      confirmPrompt.remove();
+    }, 3000);
+  }
+});
