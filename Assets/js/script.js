@@ -4,7 +4,7 @@
 $(function () {
   var currentDay = $("#currentDay");
   var today = dayjs();
-  var savedData = []
+  var savedData = JSON.parse(localStorage.getItem("scheduleData"));
 
   // TODO: Add code to display the current date in the header of the page.
   function getDate() {
@@ -21,16 +21,16 @@ $(function () {
     } else {
       suffix = "th";
     }
-    var todayDate = today.format(`dddd, MMMM D[${suffix}]`);
-    return todayDate;
+    var todayDate = dayjs().format(`dddd, MMMM D[${suffix}] h:mmA`);
+    currentDay.text(todayDate);
   }
 
   // change currentDay element by calling getDate function.
-  currentDay.text(getDate());
+  getDate();
+  setInterval(getDate, 1000);
 
   function createHourBlocks() {
     // loops for the set amount of hours in workday and creates a time block. Default sets block to future time
-
     for (let i = 0; i < 10; i++) {
       var hour = i + 9;
       var blockColor = checkHour(hour);
@@ -52,21 +52,30 @@ $(function () {
 
       // saving text input to local storage on click
       saveButton.click(function () {
-        var hourBlockID = $(this).parent().attr("id");
-        var textAreaEl = $(`#${hourBlockID}`).children()[1];
+        var hourBlockID = "#" + $(this).parent().attr("id");
+        var textAreaEl = $(hourBlockID).children()[1];
         var userText = $(textAreaEl).val();
-        if (userText !== '') {
-          savedData.push(
-            {
-              hourBlockID: hourBlockID,
-              userText: userText,
-            });
-          localStorage.setItem('scheduleData', JSON.stringify(savedData));
-          console.log(savedData)
-          
-        }
+        var eventObj = {};
+        eventObj[hourBlockID] = userText;
+        console.log(hourBlockID);
 
+        if (savedData !== null) {
+          savedData.push(eventObj);
+          // for (let i = 0; i < savedData.length; i++) {
+          //   if (Object.keys(savedData[i]) === hourBlockID) {
+          //     savedData[i][hourBlockID] = userText;
+          //   } else {
+          //     savedData.push(eventObj);
+          //   };
+          // };
+        } else {
+          savedData = [];
+          savedData.push(eventObj);
+        }
+        localStorage.setItem("scheduleData", JSON.stringify(savedData));
+        console.log(savedData);
       });
+
       var saveIcon = $("<i>", { class: "fas fa-save", "aria-hidden": "true" });
 
       // Time display. Converts the 24-hour clock to 12-hour and determines if AM or PM
@@ -77,8 +86,8 @@ $(function () {
         hour %= 12;
         amPM = "PM";
       }
-      // console.log('hour: '+ hour+amPM)
       hourDisplay.text(hour + amPM);
+
       // appends created hour block elements to the hour block container. renders the content in main container
       $(saveButton).append(saveIcon);
       $(hourBlock).append(hourDisplay, textDisplay, saveButton);
@@ -91,8 +100,6 @@ $(function () {
   /* TODO: Add a listener for click events on the save button. This code should use the id in the containing time-block as a key to save the user input in local storage. HINT: What does `this` reference in the click listener function? How can DOM traversal be used to get the "hour-x" id of the time-block containing the button that was clicked? How might the id be useful when saving the description in local storage?
    */
 
- 
-
   // TODO: Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
   // attribute of each time-block be used to conditionally add or remove the
@@ -100,7 +107,7 @@ $(function () {
   // current hour in 24-hour time?
   function checkHour(hourArg) {
     var currentHour = Number(today.format("H"));
-    // var currentHour = Number("");
+    // var currentHour = Number("12");
     if (hourArg < currentHour) {
       return "row time-block past";
     } else if (hourArg === currentHour) {
@@ -115,6 +122,56 @@ $(function () {
   // attribute of each time-block be used to do this?
   //
   // function pullData() {
-  //   var data = localStorage.getItem("scheduleData")
+  //   var data = JSON.parse(localStorage.getItem("scheduleData"));
+  //   console.log(data);
+
+  //   for (let i = 0; i < data.length; i++) {
+  //     var hourBlockID = "#" + data[i]["hourBlockID"];
+  //     var storedText = data[i]["userText"];
+  //     console.log(hourBlockID + " " + storedText);
+  //     console.log($(hourBlockID).children()[1]);
+  //     $(hourBlockID).children()[1].val = storedText
+  //     console.log("Value: " + $(hourBlockID).children()[1].val);
+  //   }
+
+  // }
+  function pullStoredData() {
+    var data = JSON.parse(localStorage.getItem("scheduleData"));
+    console.log(data);
+    if (data !== null) {
+      for (let i = 0; i < data.length; i++) {
+        var hourBlockID = Object.keys(data[i]).toString();
+        var storedText = data[i][hourBlockID];
+        console.log(storedText);
+        console.log(typeof hourBlockID);
+
+        $(hourBlockID).children()[1].value = storedText;
+        console.log($(hourBlockID).children()[1]);
+      }
+    }
+  }
+
+  pullStoredData();
+
+  // function parseStoredData(hourArg) {
+  //   var data = JSON.parse(localStorage.getItem("scheduleData"));
+  //   var hrBlock = `#hour-${hourArg}`;
+
+  //   for (let i = 0; i < data.length; i++) {
+  //     var savedHourBlock = data[i]["hourBlockID"];
+  //     var storedText = data[i]["userText"];
+
+  //     if (hrBlock === savedHourBlock) {
+  //       console.log(savedHourBlock + " " + storedText);
+  //       console.log(typeof savedHourBlock);
+
+  //       // $(savedHourBlock).children()[1].val() = storedText;
+  //       console.log($(savedHourBlock).children());
+  //       return;
+  //       // console.log($(hourBlockID).children()[1].val);
+  //       // $(hourBlockID).children()[1].val = storedText
+  //       // console.log("Value: " + $(hourBlockID).children()[1].val);
+  //     }
+  //   }
   // }
 });
