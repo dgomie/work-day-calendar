@@ -24,7 +24,7 @@ $(function () {
     var todayDate = dayjs().format(`dddd, MMMM D[${suffix}] h:mmA`);
     currentDay.text(todayDate);
   }
-  
+
   // change currentDay element by calling getDate function. updates the time displayed every second.
   getDate();
   setInterval(getDate, 1000);
@@ -150,7 +150,7 @@ $(function () {
       id: `confirm-prompt`,
       class: "text-center p-1",
     });
-    confirmPrompt.html("<strong>Appointment Saved 💾</strong>");
+    confirmPrompt.html("<strong>Appointment saved to <span >localStorage<span> 💾</strong>");
 
     containerEl.prepend(confirmPrompt);
 

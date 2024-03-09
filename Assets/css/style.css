@@ -12,6 +12,10 @@ textarea {
   padding: 10px;
 }
 
+span {
+  color: #8d2f92;
+}
+
 /* custom border thickness */
 .custom-border {
   border-bottom: solid black;
