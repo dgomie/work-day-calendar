@@ -1,21 +1,30 @@
 # Work Day Scheduler Starter Code
 
+## Description
 
-GIVEN I am using a daily planner to create a schedule
-WHEN I open the planner
-THEN the current day is displayed at the top of the calendar
+This project was created for users who want to have an hourly look at their schedule during a typical 9a-5p work day. The project allows users to add and edit their day's schedule and provides a visually easy way to determine the current hour in addition to past and future hours.
 
-WHEN I scroll down
-THEN I am presented with time blocks for standard business hours of 9am to 5pm
+## Installation
 
-WHEN I view the time blocks for that day
-THEN each time block is color-coded to indicate whether it is in the past, present, or future
+N/A
 
-WHEN I click into a time block
-THEN I can enter an event
+## Usage
 
-WHEN I click the save button for that time block
-THEN the text for that event is saved in local storage
+Navigate to https://dgomie.github.io/work-day-calendar/.
 
-WHEN I refresh the page
-THEN the saved events persist
+On the page loading, the program will display the current date and time and populate the hour block cards. Each card consists of an hour label, a text area, and a save button. Based on the current time of day, the text area will be different colors. 
+* Grey represents times in the past. 
+* Red represents the current hour. 
+* Green represents times in the future.
+
+Click on the text area to input any event, appointment, or reminder. Once complete, click the save button to save the text for that specific hour block to local storage. A prompt at the top of the schedule will confirm that the event was saved. To make any changes to an hour block, click the text area again to edit the text, and click the save button once again to save the changes. 
+
+If this is the first time loading the page, an empty 'scheduleData' array will be created and saved to local storage. All saved changes afterward will append to the scheduleData. On the page refreshing, the data in local storage will load to the designated hour block.
+
+## Credits
+
+Github user [Xandromus](https://github.com/Xandromus): [Starter Code Repo](https://github.com/coding-boot-camp/crispy-octo-meme)
+
+## License
+
+Please refer to the LICENSE in the repo.
