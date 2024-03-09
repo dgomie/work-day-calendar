@@ -105,7 +105,6 @@ $(function () {
         if (Object.keys(savedData[i]).toString() === hourBlockID) {
           savedData[i][`${hourBlockID}`] = userText;
           localStorage.setItem("scheduleData", JSON.stringify(savedData));
-          console.log("Object edited");
           editMade = true;
           break;
         }
@@ -115,13 +114,7 @@ $(function () {
         //if the hourBlock doesn't exists in local storage, push new object to storage.
         savedData.push(eventObj);
         localStorage.setItem("scheduleData", JSON.stringify(savedData));
-        console.log("New object pushed");
       }
-    } else {
-      //if no saveData exists, create a new savedData array and push created eventObject
-      savedData = [];
-      savedData.push(eventObj);
-      console.log("New Array created");
     }
     //function creates prompt notifying user that their text was saved
     eventSavedPrompt();
@@ -137,6 +130,9 @@ $(function () {
         var storedText = data[i][hourBlockID];
         $(hourBlockID).children()[1].value = storedText;
       }
+    } else {
+      savedData = [];
+      localStorage.setItem("scheduleData", JSON.stringify(savedData));
     }
   }
 
@@ -150,7 +146,9 @@ $(function () {
       id: `confirm-prompt`,
       class: "text-center p-1",
     });
-    confirmPrompt.html("<strong>Appointment saved to <span >localStorage<span> 💾</strong>");
+    confirmPrompt.html(
+      "<strong>Appointment saved to <span >localStorage<span> 💾</strong>"
+    );
 
     containerEl.prepend(confirmPrompt);
 
