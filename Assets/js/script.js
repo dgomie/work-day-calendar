@@ -76,7 +76,6 @@ $(function () {
   //  takes the  the current time and returns the appropriate class to
   function checkHour(hourArg) {
     var currentHour = Number(today.format("H"));
-    // var currentHour = Number("12");
     if (hourArg < currentHour) {
       return "row time-block past";
     } else if (hourArg === currentHour) {
